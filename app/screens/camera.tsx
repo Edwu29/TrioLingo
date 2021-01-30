@@ -44,12 +44,18 @@ export default class Cam extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Camera style={styles.camera} type={this.state.type}  ref={ref =>{this.camera = ref;}} >
+        <Camera style={styles.camera} type={this.state.type}  ref={ref => {this.camera = ref;}} >
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.button}
               onPress={this.toggleCameraType}>
               <Text>Flip</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={this.snap}>
+              <Text>Take Photo</Text>
             </TouchableOpacity>
           </View>
         </Camera>
