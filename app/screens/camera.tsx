@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+
 
 export default class Cam extends React.Component {
 
@@ -30,7 +33,7 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      let photo = await this.camera.takePictureAsync();
+      let photo = await this.camera.takePictureAsync( {base64:true} );
     }
   };
 
@@ -47,15 +50,14 @@ export default class Cam extends React.Component {
         <Camera style={styles.camera} type={this.state.type}  ref={ref => {this.camera = ref;}} >
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.resize}
               onPress={this.toggleCameraType}>
-              <Text>Flip</Text>
+              <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
             </TouchableOpacity>
-
             <TouchableOpacity
-              style={styles.button}
+              style={styles.capture}
               onPress={this.snap}>
-              <Text>Take Photo</Text>
+              <Fontisto name="camera" size={54} color="pink" />
             </TouchableOpacity>
           </View>
         </Camera>
@@ -78,10 +80,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     margin: 20,
   },
-  button: {
+  resize: {
     flex: 0.1,
     alignSelf: 'flex-end',
+    // alignItems: 'center',
+  },
+  capture: {
+    flex: 1,
     alignItems: 'center',
+    alignSelf: 'flex-end',
   },
   text: {
     fontSize: 18,
