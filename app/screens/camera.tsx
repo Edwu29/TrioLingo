@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 export default class Cam extends React.Component {
@@ -10,30 +11,55 @@ export default class Cam extends React.Component {
   camera: Camera | null = null;
   state = {
     status: "",
-    type: Camera.Constants.Type.front
+    type: Camera.Constants.Type.front,
+     show:false
   }
 
-  constructor(props: string)
-  {
+  constructor(props: string) {
     super(props);
     this.requestPermission();
   }
 
-  async requestPermission() { 
+  async requestPermission() {
     const { status } = await Camera.requestPermissionsAsync();
-    this.setState({status:'granted'});
+    this.setState({ status: 'granted' });
   }
 
   toggleCameraType = () => {
     let newCameraType = this.state.type === Camera.Constants.Type.back
-    ? Camera.Constants.Type.front
-    : Camera.Constants.Type.back;
-    this.setState({type: newCameraType});
+      ? Camera.Constants.Type.front
+      : Camera.Constants.Type.back;
+    this.setState({ type: newCameraType });
   }
 
   snap = async () => {
     if (this.camera) {
-      let photo = await this.camera.takePictureAsync( {base64:true} );
+      this.setState({show: true});
+      let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
+      let resizedPhoto = await ImageManipulator.manipulateAsync(
+        photo.uri, [{ resize: { width: photo.width * .000000001, height: photo.height * .000000001 } }], { compress: 0.0, base64: true }
+      );
+    //   console.log(resizedPhoto.uri);
+    //   console.log(resizedPhoto.width, photo.width);
+    //   console.log(resizedPhoto.height, photo.height);
+    //   fetch('http://localhost:3000', {
+
+    //     // Adding method type 
+    //     method: "POST",
+
+    //     // Adding body or contents to send 
+    //     body: JSON.stringify({
+    //       photo: "",
+    //     }),
+
+    //     // Adding headers to the request 
+    //     headers: {
+    //       "Content-type": "application/json"
+    //     }
+    //   })
+    //     .then(response => response.json())
+    //     .then(data => console.log(data))
+    //     .catch(error => console.log(error))
     }
   };
 
@@ -47,7 +73,7 @@ export default class Cam extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Camera style={styles.camera} type={this.state.type}  ref={ref => {this.camera = ref;}} >
+        <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.resize}
@@ -60,10 +86,20 @@ export default class Cam extends React.Component {
               <Fontisto name="camera" size={54} color="pink" />
             </TouchableOpacity>
           </View>
+          
+          <Modal 
+          visible = {this.state.show}>
+            <View style = {{backgroundColor: "000000aa", flex:1}}>
+              <View style = {{backgroundColor: "ffffff", margin: 50, padding: 40, borderRadius: 10, flex:1}}>
+                <Text style = {{ fontSize: 24}}> Do you want to save this photo </Text>
+                <Button title= "Yes" onPress={()=>{this.setState({show:false})}} />
+              </View>
+            </View>
+          </Modal>
         </Camera>
       </View>
-    );
-            }
+    )
+  }
 }
 
 /* @hide const styles = StyleSheet.create({ ... }); */
@@ -73,6 +109,7 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+    height: "50%"
   },
   buttonContainer: {
     flex: 1,
