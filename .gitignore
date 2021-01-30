@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 
 app/node_modules
+app/.expo
 server/node_modules
 
 # macOS
