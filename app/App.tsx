@@ -8,6 +8,7 @@ import Navigation from './navigation';
 
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+// import { EvaIconsPack } from 'eva-icons'; cannot find for some reason wtf
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -17,10 +18,12 @@ export default function App() {
     return null;
   } else {
     return (
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </ApplicationProvider>
+      <>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <Navigation colorScheme={colorScheme} />
+          <StatusBar />
+        </ApplicationProvider>
+      </>
     );
   }
 }
