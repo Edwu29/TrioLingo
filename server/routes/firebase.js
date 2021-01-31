@@ -14,12 +14,39 @@ router.get("/get_quiz", async (req, res) => {
     let objects = await getObjects(key);
     let shuffled = shuffle(Object.keys(objects));
     let quiz = [];
-    for(let i = 0; i < numQuestions; ++i) {
-        quiz.push(Object.keys(objects[shuffled[i]]));        
-    }
-    res.json(quiz);
 
-    
+    let quizWords = [];
+    let quizPool = [];
+    for (let i = 0; i < shuffled.length; ++i) {
+        quizPool.push(objects[shuffled[i]]["translation"]);
+    }
+
+    console.log(quizPool.length)
+
+    for (let i = 0; i < Math.min(numQuestions, shuffled.length); ++i) {
+        let object = objects[shuffled[i]];
+        // get words from other objects
+        let quizWord = object["translation"];
+        if (quizWords.includes(quizWord)) {
+            continue;
+        }
+
+        let wordChoices = [quizWord];
+        let newShuffle = shuffle(shuffled);
+        // get words choices from existing collection
+        for (let j = 0; j < newShuffle.length && wordChoices.length < 4; ++j) {
+            let potentialChoice = objects[shuffled[j]]["translation"];
+            if (!wordChoices.includes(potentialChoice)) {
+                wordChoices.push(potentialChoice);
+            }
+        }
+        object["wordChoices"] = wordChoices;
+        quizWords.push(quizWord);
+        quiz.push(object);
+    }
+    console.log(quizWords);
+    console.log(quiz.length)
+    res.json(quiz);
 })
 
 router.put("/append_oneObject", async function (req, res, next) {
@@ -29,14 +56,14 @@ router.put("/append_oneObject", async function (req, res, next) {
         label: "nothotdog",
         translation: "熱狗",
         translationLanguage: "japanese",
-        similarWords: ["熱狗a", "熱狗b", "熱狗c", "熱狗d"]
-
+        wordChoices: ["熱狗", "熱狗b", "熱狗c", "熱狗d"]
     });
     // appendObject();
     res.send("Object appended!"); x
 });
 
 function shuffle(array) {
+    array = [...array]
     var currentIndex = array.length, temporaryValue, randomIndex;
 
     // While there remain elements to shuffle...

@@ -6,6 +6,7 @@ import { Fontisto } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Modal from 'react-native-modal';
 import AsyncStorage from "@react-native-community/async-storage";
+import GLOBAL from './global';
 
 export default class Cam extends React.Component {
 
@@ -16,7 +17,6 @@ export default class Cam extends React.Component {
     show: false,
     fullScreen: false,
     translation: [],
-    language: "Vietnamese"
   }
 
   constructor(props: string) {
@@ -39,6 +39,8 @@ export default class Cam extends React.Component {
   snap = async () => {
     if (this.camera) {
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
+      this.camera.pausePreview();
+
       let resizedPhoto = await ImageManipulator.manipulateAsync(
         photo.uri, [{ resize: { width: photo.width * .75, height: photo.height * .75 } }], { compress: .5, base64: true }
       );
@@ -47,13 +49,14 @@ export default class Cam extends React.Component {
       console.log(resizedPhoto.height, photo.height);
 
       let key = await AsyncStorage.getItem("key");
+      console.log(GLOBAL.language)
 
       let fetchOptions = {
         method: "POST",
         body: JSON.stringify({
           key: key,
           image: resizedPhoto.base64,
-          language: this.state.language
+          language: GLOBAL.language
         }),
         headers: {
           Accept: 'application/json',
@@ -130,6 +133,7 @@ export default class Cam extends React.Component {
                     onPress={() => {
                       console.log("OK Presed")
                       this.setState({ show: false })
+                      this.camera?.resumePreview();
                     }}
                   >
                     <Text>Ok</Text>

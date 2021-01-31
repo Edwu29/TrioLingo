@@ -1,8 +1,12 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import { Picker } from '@react-native-picker/picker';
+import { Card } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
+import DropDownPicker from 'react-native-dropdown-picker';
+import GLOBAL from './global';
 
 const languages = {
   Arabic: "ar",
@@ -24,6 +28,10 @@ const languages = {
   Vietnamese: "vi",
 };
 
+// Object.keys(languages).map(language => {
+//   return {label:{language}, value:{language}} 
+// })
+
 export default class Settings extends React.Component {
   state = {
     language: "vi",
@@ -32,23 +40,48 @@ export default class Settings extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ backgroundColor: 'pink' }}>
-          <Text style={styles.text}>Language:
-            <Picker
-              selectedValue={this.state.language}
-              onValueChange={(itemValue) =>
-                this.setState({ language: itemValue })
-              }
-              style={styles.picker}
-            >
-              {
-                Object.keys(languages).map(language => {
-                  return <Picker.Item key={language} label={language} value={language} />
-                })
-              }
-            </Picker>
-          </Text>
-        </View>
+        <Card containerStyle={styles.cardStyle}>
+          <Card.Title style={styles.cardTitle}><Ionicons name="language" size={24} color="black" />Languages</Card.Title>
+          <Card.Divider />
+          {/* <Text style={styles.text}>Languages:</Text> */}
+          <View style={{ backgroundColor: 'white' }}>
+            <TouchableOpacity>
+              {/* {label: 'USA', value: 'usa'} */}
+              <DropDownPicker
+                items={[
+                  { label: 'Arabic', value: 'ar' },
+                  { label: 'Chinese_S', value: 'zh' },
+                  { label: 'Chinese_T', value: 'zh-TW' },
+                  { label: 'French', value: 'fr' },
+                  { label: 'German', value: 'de' },
+                  { label: 'Hindi', value: 'hi' },
+                  { label: 'Indonesian', value: 'id' },
+                  { label: 'Italian', value: 'it' },
+                  { label: 'Japanese', value: 'ja' },
+                  { label: 'Korean', value: 'ko' },
+                  { label: 'Myanmar', value: 'my' },
+                  { label: 'Russian', value: 'ru' },
+                  { label: 'Spanish', value: 'es' },
+                  { label: 'Tagalog', value: 'tl' },
+                  { label: 'Thai', value: 'th' },
+                  { label: 'Turkish', value: 'tr' },
+                  { label: 'Vietnamese', value: 'vi' },
+                ]}
+                containerStyle={{ height: 40 }}
+                onChangeItem={(itemValue) => {
+                  this.setState({ language: itemValue })
+                  GLOBAL.language = itemValue["label"];
+                }
+                }
+                labelStyle={{
+                  color: "#000",
+                }}
+                placeholder="Select a language."
+              >
+              </DropDownPicker>
+            </TouchableOpacity>
+          </View>
+        </Card>
       </View>
     );
   }
@@ -60,17 +93,25 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
   },
   picker: {
-    fontSize: 25,
-    height: 150,
+    fontSize: 20,
+    height: 50,
     width: 150,
-    alignSelf: 'flex-end',
-    marginLeft: 5,
+    alignSelf: 'center',
+    margin: 0,
   },
   text: {
     fontSize: 25,
-    flex: 1,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
+    alignSelf: 'center',
     marginLeft: 5,
-  }
+  },
+  cardStyle: {
+    borderRadius: 10,
+    borderColor: '#D996B7',
+    borderStyle: 'solid',
+    borderWidth: 3,
+  },
+  cardTitle: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
 });
