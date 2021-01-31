@@ -12,6 +12,9 @@ import GLOBAL from './global';
 export default class Cam extends React.Component {
 
   camera: Camera | null = null;
+  _focusListener = null;
+  _blurListener = null;
+
   state = {
     status: "",
     type: Camera.Constants.Type.front,
@@ -22,7 +25,7 @@ export default class Cam extends React.Component {
     translation: [],
   }
 
-  constructor(props: string) {
+  constructor(props: any) {
     super(props);
     this.requestPermission();
   }
@@ -30,6 +33,30 @@ export default class Cam extends React.Component {
   async requestPermission() {
     const { status } = await Camera.requestPermissionsAsync();
     this.setState({ status: 'granted' });
+  }
+
+  async componentDidMount() {
+    this._focusListener = this.props.navigation.addListener('focus', () => {
+      console.log("FOCUS");
+      this.setState({ isFocused: true });
+    });
+
+    this._blurListener = this.props.navigation.addListener('blur', () => {
+      console.log("BLUR");
+      this.setState({ isFocused: false });
+    });
+  };
+
+  componentWillUnmount() {
+    if (this._focusListener) {
+      this._focusListener();
+      this._focusListener = null;
+    }
+
+    if (this._blurListener) {
+      this._blurListener();
+      this._blurListener = null;
+    }
   }
 
   toggleCameraType = () => {
@@ -83,10 +110,9 @@ export default class Cam extends React.Component {
     if (this.state.status !== "granted") {
       return <Text>No access to camera</Text>;
     }
-    console.log(this.props);
     return (
       <View style={styles.container}>
-        {true && <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
+        {this.state.isFocused && <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
           <TouchableOpacity style={{ flex: 1 }}>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
