@@ -81,6 +81,7 @@ router.post('/', async function (req, res, next) {
   let key = req.body.key;
   let image = req.body.image;
   let language = req.body.language;
+  if (!language) language = "Vietnamese";
 
   let words = await imageToText(image);
   let translatedWords = await translateText(words, languageLookup[language]);
