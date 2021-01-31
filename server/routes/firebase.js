@@ -18,6 +18,7 @@ function initializeData() { //this function would initialize the data under user
     var data = firebase.database().ref("users/");
     var emptydata = data.push();
     emptydata.set({
+        username:"",
         objects: []
     });
     var key = emptydata.key; //this is the unique key that is initialized
