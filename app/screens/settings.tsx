@@ -7,29 +7,6 @@ import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-const languages = {
-  Arabic: "ar",
-  Chinese_S: "zh",
-  Chinese_T: "zh-TW",
-  French: "fr",
-  German: "de",
-  Hindi: "hi",
-  Indonesian: "id",
-  Italian: "it",
-  Japanese: "ja",
-  Korean: "ko",
-  Myanmar: "my",
-  Russian: "ru",
-  Spanish: "es",
-  Tagalog: "tl",
-  Thai: "th",
-  Turkish: "tr",
-  Vietnamese: "vi",
-};
-
-// Object.keys(languages).map(language => {
-//   return {label:{language}, value:{language}} 
-// })
 
 export default class Settings extends React.Component {
   state = {
@@ -42,9 +19,7 @@ export default class Settings extends React.Component {
         <Card containerStyle={styles.cardStyle}>
           <Card.Title style={styles.cardTitle}><Ionicons name="language" size={24} color="black" />Languages</Card.Title>
           <Card.Divider />
-          {/* <Text style={styles.text}>Languages:</Text> */}
           <View style={{ backgroundColor: 'white' }}>
-            {/* {label: 'USA', value: 'usa'} */}
             <DropDownPicker
               items={[
                 {label: 'Arabic', value: 'ar'}, 
