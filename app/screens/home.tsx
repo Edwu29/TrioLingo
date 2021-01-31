@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     color: "black",
+    marginBottom: 10
   },
   cardTitle: {
     justifyContent: 'flex-start',
