@@ -39,7 +39,7 @@ export default class Cam extends React.Component {
       this.setState({ show: true });
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
       let resizedPhoto = await ImageManipulator.manipulateAsync(
-        photo.uri, [{ resize: { width: photo.width * .5, height: photo.height * .5 } }], { compress: 0.0, base64: true }
+        photo.uri, [{ resize: { width: photo.width * .75, height: photo.height * .75 } }], { compress: .5, base64: true }
       );
       console.log(resizedPhoto.uri);
       console.log(resizedPhoto.width, photo.width);
@@ -47,14 +47,14 @@ export default class Cam extends React.Component {
       let fetchOptions = {
         method: "POST",
         body: JSON.stringify({
-          photo: "",
+          image: resizedPhoto.base64,
         }),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }
       };
-      fetch('https://chenaaron.com/triolingo/')
+      fetch("https://chenaaron.com/triolingo/users", fetchOptions)  //'https://chenaaron.com/triolingo?image=' + resizedPhoto.base64
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.log(error))
