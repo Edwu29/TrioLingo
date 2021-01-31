@@ -85,6 +85,7 @@ router.post('/', async function (req, res, next) {
 
   let words = await imageToText(image);
   let translatedWords = await translateText(words, languageLookup[language]);
+  res.json(translatedWords);
 
   // if google api found objects
   if (translatedWords.length > 0) {
