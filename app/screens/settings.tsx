@@ -1,16 +1,37 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import { Picker } from '@react-native-picker/picker';
 import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from "@react-native-community/async-storage";
+import GLOBAL from './global';
 
+const languages = {
+  Arabic: "ar",
+  Chinese_S: "zh",
+  Chinese_T: "zh-TW",
+  French: "fr",
+  German: "de",
+  Hindi: "hi",
+  Indonesian: "id",
+  Italian: "it",
+  Japanese: "ja",
+  Korean: "ko",
+  Myanmar: "my",
+  Russian: "ru",
+  Spanish: "es",
+  Tagalog: "tl",
+  Thai: "th",
+  Turkish: "tr",
+  Vietnamese: "vi",
+};
 
 export default class Settings extends React.Component {
   state = {
-    language: "vi",
+    language: GLOBAL.language,
   }
 
   render() {
@@ -20,36 +41,65 @@ export default class Settings extends React.Component {
           <Card.Title style={styles.cardTitle}><Ionicons name="language" size={24} color="black" />Languages</Card.Title>
           <Card.Divider />
           <View style={{ backgroundColor: 'white' }}>
-            <DropDownPicker
-              items={[
-                {label: 'Arabic', value: 'ar'}, 
-                {label: 'Chinese_S', value: 'zh'},
-                {label: 'Chinese_T', value: 'zh-TW'},
-                {label: 'French', value: 'fr'},
-                {label: 'German', value: 'de'},
-                {label: 'Hindi', value: 'hi'},
-                {label: 'Indonesian', value: 'id'},
-                {label: 'Italian', value: 'it'},
-                {label: 'Japanese', value: 'ja'},
-                {label: 'Korean', value: 'ko'},
-                {label: 'Myanmar', value: 'my'},
-                {label: 'Russian', value: 'ru'},
-                {label: 'Spanish', value: 'es'},
-                {label: 'Tagalog', value: 'tl'},
-                {label: 'Thai', value: 'th'},
-                {label: 'Turkish', value: 'tr'},
-                {label: 'Vietnamese', value: 'vi'},
-              ]}
-              containerStyle={{height:40}}
-              onChangeItem={(itemValue) =>
-                this.setState({ language: itemValue })
-              }
-              labelStyle={{
-                color: "#000",
-              }}
-              placeholder="Select a language."
-            >
-            </DropDownPicker>
+            {/* {label: 'USA', value: 'usa'} */}
+            {
+              Platform.OS === 'ios' && (
+                <DropDownPicker
+                  items={[
+                    { label: 'Arabic', value: 'ar' },
+                    { label: 'Chinese_S', value: 'zh' },
+                    { label: 'Chinese_T', value: 'zh-TW' },
+                    { label: 'French', value: 'fr' },
+                    { label: 'German', value: 'de' },
+                    { label: 'Hindi', value: 'hi' },
+                    { label: 'Indonesian', value: 'id' },
+                    { label: 'Italian', value: 'it' },
+                    { label: 'Japanese', value: 'ja' },
+                    { label: 'Korean', value: 'ko' },
+                    { label: 'Myanmar', value: 'my' },
+                    { label: 'Russian', value: 'ru' },
+                    { label: 'Spanish', value: 'es' },
+                    { label: 'Tagalog', value: 'tl' },
+                    { label: 'Thai', value: 'th' },
+                    { label: 'Turkish', value: 'tr' },
+                    { label: 'Vietnamese', value: 'vi' },
+                  ]}
+                  containerStyle={{ height: 40 }}
+                  onChangeItem={(itemValue) => {
+                    this.setState({ language: itemValue })
+                    GLOBAL.language = itemValue["label"];
+                    AsyncStorage.setItem("language", itemValue["label"]);
+                  }
+                  }
+                  labelStyle={{
+                    color: "#000",
+                  }}
+                  placeholder="Select a language."
+                >
+                </DropDownPicker>
+              )
+            }
+            {
+              Platform.OS === 'android' && (
+                <Picker
+                  selectedValue={this.state.language}
+                  style={{ height: 40, width: "100%" }}
+                  onValueChange={(itemValue, itemIndex) => {
+                    this.setState({ language: itemValue })
+                    GLOBAL.language = itemValue;
+                    AsyncStorage.setItem("language", itemValue.toString());
+                  }}
+                  prompt="Select a language."
+                >
+                  {
+                    Object.keys(languages).map(language => {
+                      return <Picker.Item key={language} label={language} value={language} />
+                    })
+                  }
+                </Picker>
+              )
+            }
+
           </View>
         </Card>
       </View>

@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
+import GLOBAL from './screens/global';
 
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider } from "@ui-kitten/components";
@@ -27,11 +28,17 @@ async function ensureIdExists() {
     //if key exists.
     console.log("this is existing key" +key);
   }
+
+  // check for language key
+  let language = await AsyncStorage.getItem("language");
+  if (language) {
+    GLOBAL.language = language;
+  }
 }
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();  
 
   if (!isLoadingComplete) {
     return null;

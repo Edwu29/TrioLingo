@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Modal from 'react-native-modal';
 import AsyncStorage from "@react-native-community/async-storage";
+import { NavigationEvents } from 'react-navigation';
+import GLOBAL from './global';
 
 export default class Cam extends React.Component {
 
   camera: Camera | null = null;
+  _focusListener = null;
+  _blurListener = null;
+
   state = {
     status: "",
     type: Camera.Constants.Type.front,
-    show: true,
+    show: false,
     fullScreen: false,
+    loaded: true,
+    isFocused: true,
     translation: [],
-    language: "Vietnamese"
   }
 
-  constructor(props: string) {
+  constructor(props: any) {
     super(props);
     this.requestPermission();
   }
@@ -27,6 +33,29 @@ export default class Cam extends React.Component {
   async requestPermission() {
     const { status } = await Camera.requestPermissionsAsync();
     this.setState({ status: 'granted' });
+  }
+
+  async componentDidMount() {
+    this._focusListener = this.props.navigation.addListener('focus', () => {
+      this.setState({ isFocused: true });
+    });
+
+    this._blurListener = this.props.navigation.addListener('blur', () => {
+      this.setState({ isFocused: false });
+    });
+  };
+
+  componentWillUnmount() {    
+    console.log("UNMOUNTING");
+    if (this._focusListener) {
+      this._focusListener();
+      this._focusListener = null;
+    }
+
+    if (this._blurListener) {
+      this._blurListener();
+      this._blurListener = null;
+    }
   }
 
   toggleCameraType = () => {
@@ -39,6 +68,8 @@ export default class Cam extends React.Component {
   snap = async () => {
     if (this.camera) {
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
+      this.camera.pausePreview();
+
       let resizedPhoto = await ImageManipulator.manipulateAsync(
         photo.uri, [{ resize: { width: photo.width * .75, height: photo.height * .75 } }], { compress: .5, base64: true }
       );
@@ -47,13 +78,14 @@ export default class Cam extends React.Component {
       console.log(resizedPhoto.height, photo.height);
 
       let key = await AsyncStorage.getItem("key");
+      console.log(GLOBAL.language)
 
       let fetchOptions = {
         method: "POST",
         body: JSON.stringify({
           key: key,
           image: resizedPhoto.base64,
-          language: this.state.language
+          language: GLOBAL.language
         }),
         headers: {
           Accept: 'application/json',
@@ -79,64 +111,68 @@ export default class Cam extends React.Component {
     }
     return (
       <View style={styles.container}>
-        <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.resize}
-              onPress={this.toggleCameraType}>
-              <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
-            </TouchableOpacity>
+        {this.state.isFocused && <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
+          <TouchableOpacity style={{ flex: 1 }}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.resize}
+                onPress={this.toggleCameraType}>
+                <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.capture}
-              onPress={this.snap}>
-              <Fontisto name="camera" size={54} color="pink" />
-            </TouchableOpacity>
-          </View>
-
-          <Modal
-            isVisible={this.state.show}
-            coverScreen={false}
-          >
-            <View style={{ backgroundColor: "#FFFEF2" }}>
-              <View
-                style={{
-                  borderTopLeftRadius: 10,
-                  borderTopRightRadius: 10,
-                  overflow: 'hidden',
-                  alignItems: 'center',
-                  padding: "3%"
-                }} >
-                {
-                  this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
-                    We found a {this.state.translation[0]["original"]}.
-                    It translates to {this.state.translation[0]["translated"]} in {this.state.language}.
-                  </Text>
-                }
-                {
-                  this.state.translation.length == 0 && <Text style={{ fontSize: 24 }}>
-                    We did not find anything! Try again.
-                  </Text>
-                }
-              </View>
-
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "center", alignItems: "center"
-              }}>
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={() => {
-                    console.log("OK Presed")
-                    this.setState({ show: false })
-                  }}
-                >
-                  <Text>Ok</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.capture}
+                onPress={this.snap}>
+                <Fontisto name="camera" size={54} color="pink" />
+              </TouchableOpacity>
             </View>
-          </Modal>
+
+            <Modal
+              isVisible={this.state.show}
+              coverScreen={false}
+            >
+              <View style={{ backgroundColor: "#FFFEF2" }}>
+                <View
+                  style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    overflow: 'hidden',
+                    alignItems: 'center',
+                    padding: "3%"
+                  }} >
+                  {
+                    this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
+                      We found a {this.state.translation[0]["original"]}.
+                    It translates to {this.state.translation[0]["translated"]} in {GLOBAL.language}.
+                  </Text>
+                  }
+                  {
+                    this.state.translation.length == 0 && <Text style={{ fontSize: 24 }}>
+                      We did not find anything! Try again.
+                  </Text>
+                  }
+                </View>
+
+                <View style={{
+                  flexDirection: "row",
+                  justifyContent: "center", alignItems: "center"
+                }}>
+                  <TouchableOpacity
+                    style={styles.okButton}
+                    onPress={() => {
+                      console.log("OK Presed")
+                      this.setState({ show: false })
+                      this.camera?.resumePreview();
+                    }}
+                  >
+                    <Text>Ok</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </TouchableOpacity>
         </Camera>
+        }
       </View >
     )
   }

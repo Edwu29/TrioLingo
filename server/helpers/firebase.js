@@ -31,4 +31,13 @@ function appendObject(id, objects) {
     newdata.set(objects);
 }
 
-module.exports = { initializeData, appendObject };
+function getObjects(id) {
+    return new Promise((resolve) => {
+        var userRef = firebase.database().ref('users/' + id + "/objects")
+        userRef.once("value", function (data) {
+            resolve(data.val());
+        });
+    })
+}
+
+module.exports = { initializeData, appendObject, getObjects };
