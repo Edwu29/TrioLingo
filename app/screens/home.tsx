@@ -8,6 +8,15 @@ import { Ionicons } from '@expo/vector-icons';
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
+      <View style={{ backgroundColor: "pink", justifyContent: "center", alignItems: "center" }}>
+        <Text style={styles.title}>
+          31
+        </Text>
+        <Text style={styles.subtitle}>
+          Words Discovered
+        </Text>
+      </View>
+
       <Card containerStyle={styles.cardStyle}>
         <Card.Title style={styles.cardTitle}><Ionicons name="calendar" size={30} color="#0D7DBC" />Current Quiz</Card.Title>
         <Card.Divider />
@@ -33,6 +42,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'pink',
+  },
+  title: {
+    fontSize: 100
+  },
+  subtitle: {
+    fontSize: 40
   },
   cardStyle: {
     borderRadius: 10,
