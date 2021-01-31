@@ -37,17 +37,16 @@ export default class Cam extends React.Component {
 
   async componentDidMount() {
     this._focusListener = this.props.navigation.addListener('focus', () => {
-      console.log("FOCUS");
       this.setState({ isFocused: true });
     });
 
     this._blurListener = this.props.navigation.addListener('blur', () => {
-      console.log("BLUR");
       this.setState({ isFocused: false });
     });
   };
 
-  componentWillUnmount() {
+  componentWillUnmount() {    
+    console.log("UNMOUNTING");
     if (this._focusListener) {
       this._focusListener();
       this._focusListener = null;

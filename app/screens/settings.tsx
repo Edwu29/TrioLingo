@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from "@react-native-community/async-storage";
 import GLOBAL from './global';
 
 const languages = {
@@ -34,7 +35,7 @@ const languages = {
 
 export default class Settings extends React.Component {
   state = {
-    language: "vi",
+    language: GLOBAL.language,
   }
 
   render() {
@@ -72,6 +73,7 @@ export default class Settings extends React.Component {
                   onChangeItem={(itemValue) => {
                     this.setState({ language: itemValue })
                     GLOBAL.language = itemValue["label"];
+                    AsyncStorage.setItem("language", itemValue["label"]);
                   }
                   }
                   labelStyle={{
@@ -90,6 +92,7 @@ export default class Settings extends React.Component {
                   onValueChange={(itemValue, itemIndex) => {
                     this.setState({ language: itemValue })
                     GLOBAL.language = itemValue;
+                    AsyncStorage.setItem("language", itemValue.toString());
                   }}
                   prompt="Select a language."
                 >
@@ -97,7 +100,7 @@ export default class Settings extends React.Component {
                     Object.keys(languages).map(language => {
                       return <Picker.Item key={language} label={language} value={language} />
                     })
-                  }                
+                  }
                 </Picker>
               )
             }
