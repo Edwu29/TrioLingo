@@ -52,11 +52,10 @@ async function translateText(words, targetLanguage) {
 
 /* GET users listing. */
 router.post('/', async function(req, res, next) {
-  res.json(req.body);
   let image = req.body.image;
   let words = await imageToText(image);
   let translatedWords = await translateText(words, "zh-TW");
-  console.log(translatedWords);
+  res.json(translatedWords);
 
 });
 
