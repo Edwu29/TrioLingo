@@ -1,10 +1,31 @@
 var express = require('express');
 var router = express.Router();
 
+const fs = require("fs");
 // Imports the Google Cloud client library
 const { Translate } = require("@google-cloud/translate").v2;
 // Imports the Google Cloud client libraries
 const vision = require("@google-cloud/vision");
+
+const languageLookup = {
+  Arabic: "ar",
+  Chinese_S: "zh",
+  Chinese_T: "zh-TW",
+  French: "fr",
+  German: "de",
+  Hindi: "hi",
+  Indonesian: "id",
+  Italian: "it",
+  Japanese: "ja",
+  Korean: "ko",
+  Myanmar: "my",
+  Russian: "ru",
+  Spanish: "es",
+  Tagalog: "tl",
+  Thai: "th",
+  Turkish: "tr",
+  Vietnamese: "vi",
+};
 
 async function imageToText(image) {
   // Creates a client
@@ -55,7 +76,6 @@ router.post('/', async function(req, res, next) {
   let image = req.body.image;
   let words = await imageToText(image);
   let translatedWords = await translateText(words, "zh-TW");
-  res.json(translatedWords);
 });
 
 module.exports = router;

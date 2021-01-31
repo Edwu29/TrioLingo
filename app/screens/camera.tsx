@@ -54,7 +54,7 @@ export default class Cam extends React.Component {
           'Content-Type': 'application/json',
         }
       };
-      fetch("https://chenaaron.com/triolingo/users", fetchOptions)  //'https://chenaaron.com/triolingo?image=' + resizedPhoto.base64
+      fetch("https://chenaaron.com/triolingo/users", fetchOptions)
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(error => console.log(error))
