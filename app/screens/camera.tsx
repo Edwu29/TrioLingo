@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
+import Modal from 'react-native-modal';
 
 
 export default class Cam extends React.Component {
@@ -12,7 +13,8 @@ export default class Cam extends React.Component {
   state = {
     status: "",
     type: Camera.Constants.Type.front,
-     show:false
+    show: false,
+    fullScreen: false,
   }
 
   constructor(props: string) {
@@ -34,32 +36,32 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      this.setState({show: true});
+      this.setState({ show: true });
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
-      let resizedPhoto = await ImageManipulator.manipulateAsync(
-        photo.uri, [{ resize: { width: photo.width * .000000001, height: photo.height * .000000001 } }], { compress: 0.0, base64: true }
-      );
-    //   console.log(resizedPhoto.uri);
-    //   console.log(resizedPhoto.width, photo.width);
-    //   console.log(resizedPhoto.height, photo.height);
-    //   fetch('http://localhost:3000', {
+      // let resizedPhoto = await ImageManipulator.manipulateAsync(
+      //   photo.uri, [{ resize: { width: photo.width * .000000001, height: photo.height * .000000001 } }], { compress: 0.0, base64: true }
+      // );
+      // console.log(resizedPhoto.uri);
+      // console.log(resizedPhoto.width, photo.width);
+      // console.log(resizedPhoto.height, photo.height);
+      //   fetch('https://chenaaron.com/triolingo/', {
 
-    //     // Adding method type 
-    //     method: "POST",
+      //     // Adding method type 
+      //     method: "POST",
 
-    //     // Adding body or contents to send 
-    //     body: JSON.stringify({
-    //       photo: "",
-    //     }),
+      //     // Adding body or contents to send 
+      //     body: JSON.stringify({
+      //       photo: photo.base64,
+      //     }),
 
-    //     // Adding headers to the request 
-    //     headers: {
-    //       "Content-type": "application/json"
-    //     }
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => console.log(data))
-    //     .catch(error => console.log(error))
+      //     // Adding headers to the request 
+      //     headers: {
+      //       "Content-type": "application/json"
+      //     }
+      //   })
+      //     .then(response => response.json())
+      //     .then(data => console.log(data))
+      //     .catch(error => console.log(error))
     }
   };
 
@@ -80,27 +82,53 @@ export default class Cam extends React.Component {
               onPress={this.toggleCameraType}>
               <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.capture}
               onPress={this.snap}>
               <Fontisto name="camera" size={54} color="pink" />
             </TouchableOpacity>
           </View>
-          
-          <Modal 
-          visible = {this.state.show}>
-            <View style = {{backgroundColor: "000000aa", flex:1}}>
-              <View style = {{backgroundColor: "ffffff", margin: 50, padding: 40, borderRadius: 10, flex:1}}>
-                <Text style = {{ fontSize: 24}}> Do you want to save this photo </Text>
-                <Button title= "Yes" onPress={()=>{this.setState({show:false})}} />
+
+          <Modal
+            isVisible={this.state.show}
+            coverScreen={false}
+          >
+            <View style={{ backgroundColor: "#FFFEF2" }}>
+              <View
+                style={{
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                  overflow: 'hidden',
+                  alignItems: 'center'
+                }} >
+                <Text style={{ fontSize: 24 }}> Do you want to save this photo?</Text>
+              </View>
+              
+              <View style={{ flexDirection: "row" }}>
+                <View style={styles.yesButton}>
+                  <Button
+                    title="Yes"
+                    onPress={() => { this.setState({ show: false }) }}
+                    color="#000"
+                  />
+                </View>
+                <View style={styles.noButton}>
+                  <Button
+                    title="No"
+                    onPress={() => { this.setState({ show: false }) }}
+                    color="#000"
+                  />
+                </View>
               </View>
             </View>
           </Modal>
         </Camera>
-      </View>
+      </View >
     )
   }
 }
+/* // style = {{backgroundColor: "ffffff", margin: 50, padding: 40, borderRadius: 10, flex: 1}} */
 
 /* @hide const styles = StyleSheet.create({ ... }); */
 const styles = StyleSheet.create({
@@ -116,20 +144,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     flexDirection: 'row',
     margin: 20,
+    width: '100%'
   },
   resize: {
     flex: 0.1,
     alignSelf: 'flex-end',
-    // alignItems: 'center',
+    alignItems: 'center',
   },
   capture: {
     flex: 1,
-    alignItems: 'center',
     alignSelf: 'flex-end',
+    alignItems: 'center',
+    marginRight: 63
   },
   text: {
     fontSize: 18,
     color: 'white',
+  },
+  yesButton: {
+    marginVertical: '5%',
+    marginLeft: '25%',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  noButton: {
+    marginVertical: '5%',
+    marginLeft: '25%',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   },
 });
 /* @end */
