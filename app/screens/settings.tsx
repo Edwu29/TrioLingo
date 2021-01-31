@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Text, View } from '../components/Themed';
 import { Picker } from '@react-native-picker/picker';
@@ -45,41 +45,63 @@ export default class Settings extends React.Component {
           <Card.Divider />
           {/* <Text style={styles.text}>Languages:</Text> */}
           <View style={{ backgroundColor: 'white' }}>
-            <TouchableOpacity>
-              {/* {label: 'USA', value: 'usa'} */}
-              <DropDownPicker
-                items={[
-                  { label: 'Arabic', value: 'ar' },
-                  { label: 'Chinese_S', value: 'zh' },
-                  { label: 'Chinese_T', value: 'zh-TW' },
-                  { label: 'French', value: 'fr' },
-                  { label: 'German', value: 'de' },
-                  { label: 'Hindi', value: 'hi' },
-                  { label: 'Indonesian', value: 'id' },
-                  { label: 'Italian', value: 'it' },
-                  { label: 'Japanese', value: 'ja' },
-                  { label: 'Korean', value: 'ko' },
-                  { label: 'Myanmar', value: 'my' },
-                  { label: 'Russian', value: 'ru' },
-                  { label: 'Spanish', value: 'es' },
-                  { label: 'Tagalog', value: 'tl' },
-                  { label: 'Thai', value: 'th' },
-                  { label: 'Turkish', value: 'tr' },
-                  { label: 'Vietnamese', value: 'vi' },
-                ]}
-                containerStyle={{ height: 40 }}
-                onChangeItem={(itemValue) => {
-                  this.setState({ language: itemValue })
-                  GLOBAL.language = itemValue["label"];
-                }
-                }
-                labelStyle={{
-                  color: "#000",
-                }}
-                placeholder="Select a language."
-              >
-              </DropDownPicker>
-            </TouchableOpacity>
+            {/* {label: 'USA', value: 'usa'} */}
+            {
+              Platform.OS === 'ios' && (
+                <DropDownPicker
+                  items={[
+                    { label: 'Arabic', value: 'ar' },
+                    { label: 'Chinese_S', value: 'zh' },
+                    { label: 'Chinese_T', value: 'zh-TW' },
+                    { label: 'French', value: 'fr' },
+                    { label: 'German', value: 'de' },
+                    { label: 'Hindi', value: 'hi' },
+                    { label: 'Indonesian', value: 'id' },
+                    { label: 'Italian', value: 'it' },
+                    { label: 'Japanese', value: 'ja' },
+                    { label: 'Korean', value: 'ko' },
+                    { label: 'Myanmar', value: 'my' },
+                    { label: 'Russian', value: 'ru' },
+                    { label: 'Spanish', value: 'es' },
+                    { label: 'Tagalog', value: 'tl' },
+                    { label: 'Thai', value: 'th' },
+                    { label: 'Turkish', value: 'tr' },
+                    { label: 'Vietnamese', value: 'vi' },
+                  ]}
+                  containerStyle={{ height: 40 }}
+                  onChangeItem={(itemValue) => {
+                    this.setState({ language: itemValue })
+                    GLOBAL.language = itemValue["label"];
+                  }
+                  }
+                  labelStyle={{
+                    color: "#000",
+                  }}
+                  placeholder="Select a language."
+                >
+                </DropDownPicker>
+              )
+            }
+            {
+              Platform.OS === 'android' && (
+                <Picker
+                  selectedValue={this.state.language}
+                  style={{ height: 40, width: "100%" }}
+                  onValueChange={(itemValue, itemIndex) => {
+                    this.setState({ language: itemValue })
+                    GLOBAL.language = itemValue;
+                  }}
+                  prompt="Select a language."
+                >
+                  {
+                    Object.keys(languages).map(language => {
+                      return <Picker.Item key={language} label={language} value={language} />
+                    })
+                  }                
+                </Picker>
+              )
+            }
+
           </View>
         </Card>
       </View>

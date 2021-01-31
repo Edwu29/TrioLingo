@@ -6,6 +6,7 @@ import { Fontisto } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Modal from 'react-native-modal';
 import AsyncStorage from "@react-native-community/async-storage";
+import { NavigationEvents } from 'react-navigation';
 import GLOBAL from './global';
 
 export default class Cam extends React.Component {
@@ -16,6 +17,8 @@ export default class Cam extends React.Component {
     type: Camera.Constants.Type.front,
     show: false,
     fullScreen: false,
+    loaded: true,
+    isFocused: true,
     translation: [],
   }
 
@@ -80,9 +83,10 @@ export default class Cam extends React.Component {
     if (this.state.status !== "granted") {
       return <Text>No access to camera</Text>;
     }
+    console.log(this.props);
     return (
       <View style={styles.container}>
-        <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
+        {true && <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
           <TouchableOpacity style={{ flex: 1 }}>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -114,7 +118,7 @@ export default class Cam extends React.Component {
                   {
                     this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
                       We found a {this.state.translation[0]["original"]}.
-                    It translates to {this.state.translation[0]["translated"]} in {this.state.language}.
+                    It translates to {this.state.translation[0]["translated"]} in {GLOBAL.language}.
                   </Text>
                   }
                   {
@@ -143,6 +147,7 @@ export default class Cam extends React.Component {
             </Modal>
           </TouchableOpacity>
         </Camera>
+        }
       </View >
     )
   }
