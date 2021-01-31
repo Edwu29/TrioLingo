@@ -9,7 +9,7 @@ import Navigation from './navigation';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider } from '@ui-kitten/components';
 // import { EvaIconsPack } from 'eva-icons'; cannot find for some reason wtf
-import { AsyncStorage } from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
 async function ensureIdExists() {
   let id = await AsyncStorage.getItem('id');
