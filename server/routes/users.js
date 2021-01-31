@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var { appendObject } = require("../helpers/firebase");
 
 const fs = require("fs");
 // Imports the Google Cloud client library
@@ -61,23 +62,42 @@ async function imageToText(image) {
 async function translateText(words, targetLanguage) {
   // Instantiates a client
   const translate = new Translate();
-  let translatedWords = {};
+  let translatedWords = [];
   for (let i = 0; i < words.length; ++i) {
     let word = words[i];
     // Translates some text into Russian
     const [translation] = await translate.translate(word, targetLanguage);
-    translatedWords[word] = translation;
+    translatedWords.push({
+      original: word,
+      translated: translation
+    });
   }
   return translatedWords;
 }
 
 /* GET users listing. */
-router.post('/', async function(req, res, next) {
+router.post('/', async function (req, res, next) {
+  let key = req.body.key;
   let image = req.body.image;
+  let language = req.body.language;
   let words = await imageToText(image);
   let translatedWords = await translateText(words, "zh-TW");
-  res.json(translatedWords);
 
+  // if google api found objects
+  if (translatedWords.length > 0) {
+    let bestResults = translatedWords[0];
+
+    // form a document in the database
+    let object = {
+      image: image,
+      label: bestResults["original"],
+      translation: bestResults["translated"],
+      translationLanguage: language,
+      similarWords: []
+    };
+
+    appendObject(key, object);
+  }
 });
 
 module.exports = router;

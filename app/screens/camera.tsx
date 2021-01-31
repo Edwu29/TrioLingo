@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Modal from 'react-native-modal';
-
+import AsyncStorage from "@react-native-community/async-storage";
 
 export default class Cam extends React.Component {
 
@@ -44,9 +44,13 @@ export default class Cam extends React.Component {
       console.log(resizedPhoto.uri);
       console.log(resizedPhoto.width, photo.width);
       console.log(resizedPhoto.height, photo.height);
+      
+      let key = AsyncStorage.getItem("key");
+
       let fetchOptions = {
         method: "POST",
         body: JSON.stringify({
+          key: key,
           image: resizedPhoto.base64,
         }),
         headers: {
