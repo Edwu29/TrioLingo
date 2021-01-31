@@ -23,7 +23,7 @@ router.get("/get_quiz", async (req, res) => {
 
     console.log(quizPool.length)
 
-    for (let i = 0; i < Math.min(numQuestions, shuffled.length); ++i) {
+    for (let i = 0; i < shuffled.length && numQuestions > quizWords.length; ++i) {
         let object = objects[shuffled[i]];
         // get words from other objects
         let quizWord = object["translation"];
