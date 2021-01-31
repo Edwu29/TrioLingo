@@ -16,3 +16,4 @@ server/node_modules
 
 # macOS
 .DS_Store
+.env
