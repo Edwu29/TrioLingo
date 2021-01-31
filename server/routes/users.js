@@ -77,7 +77,7 @@ async function translateText(words, targetLanguage) {
 
 /* GET users listing. */
 router.post('/', async function (req, res, next) {
-  let id = req.body.id;
+  let key = req.body.key;
   let image = req.body.image;
   let language = req.body.language;
   let words = await imageToText(image);
@@ -96,7 +96,7 @@ router.post('/', async function (req, res, next) {
       similarWords: []
     };
 
-    appendObject(id, object);
+    appendObject(key, object);
   }
 });
 
