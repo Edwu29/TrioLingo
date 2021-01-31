@@ -7,6 +7,7 @@ const fs = require("fs");
 const { Translate } = require("@google-cloud/translate").v2;
 // Imports the Google Cloud client libraries
 const vision = require("@google-cloud/vision");
+const { lookup } = require('dns');
 
 const languageLookup = {
   Arabic: "ar",
@@ -80,8 +81,11 @@ router.post('/', async function (req, res, next) {
   let key = req.body.key;
   let image = req.body.image;
   let language = req.body.language;
+  if (!language) language = "Vietnamese";
+
   let words = await imageToText(image);
-  let translatedWords = await translateText(words, "zh-TW");
+  let translatedWords = await translateText(words, languageLookup[language]);
+  res.json(translatedWords);
 
   // if google api found objects
   if (translatedWords.length > 0) {

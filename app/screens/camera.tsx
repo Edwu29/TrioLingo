@@ -45,13 +45,14 @@ export default class Cam extends React.Component {
       console.log(resizedPhoto.width, photo.width);
       console.log(resizedPhoto.height, photo.height);
       
-      let key = AsyncStorage.getItem("key");
+      let key = await AsyncStorage.getItem("key");
 
       let fetchOptions = {
         method: "POST",
         body: JSON.stringify({
           key: key,
           image: resizedPhoto.base64,
+          language: "Vietnamese"
         }),
         headers: {
           Accept: 'application/json',
