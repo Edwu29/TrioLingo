@@ -1,38 +1,31 @@
 import * as React from 'react';
-import { StyleSheet, SectionList } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-
-const DATA = [
-  {
-    title: "Current Quizzes",
-    data: ["a quiz you haven't taken yet", "a photo you took recently"]
-  },
-  {
-    title: "History",
-    data: ["old quiz u got right", "old quiz you got wrong"]
-  }
-]
-
-const Item = ({ title }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+import { MaterialCommunityIcons, Entypo  } from '@expo/vector-icons';
+import { Card, Button } from 'react-native-elements';
 
 export default function TabOneScreen() {
   return (
+    <View style={styles.container}>
 
-    <View>
-      <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => <Item title={item} />}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.header}>{title}</Text>
-        )}
-      />
+
+      <Card containerStyle={styles.cardStyle}>
+        <View>
+          <Card.Title style={styles.cardTitle}><MaterialCommunityIcons name='calendar' color='#0D7DBC' size={30} />Current Quiz</Card.Title>
+          <Card.Divider style={styles.cardDivider}>
+            <Text>Hello there! There are no quizzes determined yet, please choose a language :).</Text>
+          </Card.Divider>
+        </View>
+      </Card>
+
+      <Card containerStyle={styles.cardStyle}>
+        <Card.Title style={styles.cardTitle}><Entypo name="back-in-time" size={24} color="#0D7DBC" /> History</Card.Title>
+        <Card.Divider style={styles.cardDivider}>
+          <Text>Number of Quizzes Taken: 0</Text>
+          <Text>Accuracy: 0%</Text>
+        </Card.Divider>
+      </Card>
     </View>
   );
 }
@@ -40,25 +33,24 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'pink',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  cardStyle: {
+    borderRadius: 10,
+    borderColor: '#D996B7',
+    borderStyle: 'solid',
+    borderWidth: 3,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  cardDivider: {
+    backgroundColor: 'white',
+    flex: 1,
   },
-  header: {
-    fontSize: 32,
-    backgroundColor: "#fff"
+  cardText: {
+    fontSize: 12,
   },
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8
+  cardTitle: {
+    justifyContent: 'flex-start',
+    alignSelf: 'flex-start',
+    flex: 1,
   },
 });
