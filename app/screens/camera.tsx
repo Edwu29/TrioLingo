@@ -12,7 +12,7 @@ export default class Cam extends React.Component {
   state = {
     status: "",
     type: Camera.Constants.Type.front,
-     show:false
+    show: false
   }
 
   constructor(props: string) {
@@ -34,32 +34,32 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      this.setState({show: true});
+      this.setState({ show: true });
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
       let resizedPhoto = await ImageManipulator.manipulateAsync(
-        photo.uri, [{ resize: { width: photo.width * .000000001, height: photo.height * .000000001 } }], { compress: 0.0, base64: true }
+        photo.uri, [{ resize: { width: photo.width * .1, height: photo.height * .1 } }], { compress: 0.0, base64: true }
       );
-    //   console.log(resizedPhoto.uri);
-    //   console.log(resizedPhoto.width, photo.width);
-    //   console.log(resizedPhoto.height, photo.height);
-    //   fetch('http://localhost:3000', {
+      console.log(resizedPhoto.uri);
+      console.log(resizedPhoto.width, photo.width);
+      console.log(resizedPhoto.height, photo.height);
+      let fetchOptions = {
+        method: "POST",
+        body: JSON.stringify({
+          photo: "",
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }
+      };
 
-    //     // Adding method type 
-    //     method: "POST",
+      console.log(JSON.stringify(fetchOptions));
+      console.log(resizedPhoto.base64);
 
-    //     // Adding body or contents to send 
-    //     body: JSON.stringify({
-    //       photo: "",
-    //     }),
-
-    //     // Adding headers to the request 
-    //     headers: {
-    //       "Content-type": "application/json"
-    //     }
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => console.log(data))
-    //     .catch(error => console.log(error))
+      fetch(`https://chenaaron.com/triolingo?image=${resizedPhoto.base64}`, fetchOptions)
+        // .then(response => response.json())
+        // .then(data => console.log(data))
+        // .catch(error => console.log(error))
     }
   };
 
@@ -86,13 +86,13 @@ export default class Cam extends React.Component {
               <Fontisto name="camera" size={54} color="pink" />
             </TouchableOpacity>
           </View>
-          
-          <Modal 
-          visible = {this.state.show}>
-            <View style = {{backgroundColor: "000000aa", flex:1}}>
-              <View style = {{backgroundColor: "ffffff", margin: 50, padding: 40, borderRadius: 10, flex:1}}>
-                <Text style = {{ fontSize: 24}}> Do you want to save this photo </Text>
-                <Button title= "Yes" onPress={()=>{this.setState({show:false})}} />
+
+          <Modal
+            visible={this.state.show}>
+            <View style={{ backgroundColor: "000000aa", flex: 1 }}>
+              <View style={{ backgroundColor: "ffffff", margin: 50, padding: 40, borderRadius: 10, flex: 1 }}>
+                <Text style={{ fontSize: 24 }}> Do you want to save this photo </Text>
+                <Button title="Yes" onPress={() => { this.setState({ show: false }) }} />
               </View>
             </View>
           </Modal>

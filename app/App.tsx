@@ -7,7 +7,7 @@ import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
+// import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
 // import { EvaIconsPack } from 'eva-icons'; cannot find for some reason wtf
 
 export default function App() {
@@ -19,10 +19,8 @@ export default function App() {
   } else {
     return (
       <>
-        <ApplicationProvider {...eva} theme={eva.light}>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </ApplicationProvider>
+        <Navigation colorScheme={colorScheme} />
+        <StatusBar />
       </>
     );
   }
