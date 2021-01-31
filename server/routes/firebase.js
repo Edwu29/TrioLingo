@@ -59,8 +59,14 @@ router.put("/append_oneObject", async function (req, res, next) {
         wordChoices: ["熱狗", "熱狗b", "熱狗c", "熱狗d"]
     });
     // appendObject();
-    res.send("Object appended!"); x
+    res.send("Object appended!");
 });
+
+router.get("/get_total", async (req, res) => {
+    let key = req.query.key;
+    let objects = await getObjects(key);
+    res.json({ count: Object.keys(objects) });
+})
 
 function shuffle(array) {
     array = [...array]

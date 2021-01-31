@@ -29,10 +29,6 @@ const languages = {
   Vietnamese: "vi",
 };
 
-// Object.keys(languages).map(language => {
-//   return {label:{language}, value:{language}} 
-// })
-
 export default class Settings extends React.Component {
   state = {
     language: GLOBAL.language,
@@ -44,7 +40,6 @@ export default class Settings extends React.Component {
         <Card containerStyle={styles.cardStyle}>
           <Card.Title style={styles.cardTitle}><Ionicons name="language" size={24} color="black" />Languages</Card.Title>
           <Card.Divider />
-          {/* <Text style={styles.text}>Languages:</Text> */}
           <View style={{ backgroundColor: 'white' }}>
             {/* {label: 'USA', value: 'usa'} */}
             {
