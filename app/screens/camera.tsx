@@ -120,17 +120,19 @@ export default class Cam extends React.Component {
                 }
               </View>
 
-              <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%" }}>
-                <View style={styles.okButton}>
-                  <Button
-                    title="Ok"
-                    onPress={() => { 
-                      console.log("OK Presed")
-                      this.setState({ show: false }) 
-                    }}
-                    color="#000"
-                  />
-                </View>
+              <View style={{
+                flexDirection: "row",
+                justifyContent: "center", alignItems: "center"
+              }}>
+                <TouchableOpacity
+                  style={styles.okButton}
+                  onPress={() => {
+                    console.log("OK Presed")
+                    this.setState({ show: false })
+                  }}
+                >
+                  <Text>Ok</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>
@@ -173,9 +175,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   okButton: {
-    paddingVertical: '5%',
-    paddingHorizontal: '5%',
-    width: '20%'
+    marginVertical: '2%',
+    paddingVertical: '3%',
+    paddingHorizontal: '10%',
+    backgroundColor: "#DDDDDD",
+    padding: 10
   },
   yesButton: {
     marginVertical: '5%',
