@@ -37,7 +37,7 @@ export default class Cam extends React.Component {
       this.setState({ show: true });
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
       let resizedPhoto = await ImageManipulator.manipulateAsync(
-        photo.uri, [{ resize: { width: photo.width * .1, height: photo.height * .1 } }], { compress: 0.0, base64: true }
+        photo.uri, [{ resize: { width: photo.width * .5, height: photo.height * .5 } }], { compress: 0.0, base64: true }
       );
       console.log(resizedPhoto.uri);
       console.log(resizedPhoto.width, photo.width);
