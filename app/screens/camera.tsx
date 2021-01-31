@@ -68,7 +68,6 @@ export default class Cam extends React.Component {
     if (this.state.status !== "granted") {
       return <Text>No access to camera</Text>;
     }
-
     return (
       <View style={styles.container}>
         <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
