@@ -1,23 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+import useCachedResources from "./hooks/useCachedResources";
+import useColorScheme from "./hooks/useColorScheme";
+import Navigation from "./navigation";
 
-import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import * as eva from "@eva-design/eva";
+import { ApplicationProvider } from "@ui-kitten/components";
 // import { EvaIconsPack } from 'eva-icons'; cannot find for some reason wtf
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from "@react-native-community/async-storage";
 
 async function ensureIdExists() {
-  let id = await AsyncStorage.getItem('id');
-  // check if id exists in our local storage
-  if (!id) {
+  let key = await AsyncStorage.getItem("key");
+  // check if key exists in our local storage
+  if (!key) {
     // if it doesnt exist, we fetch from server
-
-    // store id to local storage
+    fetch("https://chenaaron.com/triolingo/firebase/initialize_database")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        AsyncStorage.setItem("key", data["key"]); // store key to local storage
+      })
+      .catch((error) => console.log(error));
+  } else {
+    //if key exists.
+    console.log("this is existing key" +key);
   }
 }
 
@@ -28,6 +36,7 @@ export default function App() {
   if (!isLoadingComplete) {
     return null;
   } else {
+    ensureIdExists();
     return (
       <>
         {/* <ApplicationProvider {...eva} theme={eva.light}> */}
