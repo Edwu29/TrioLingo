@@ -16,7 +16,7 @@ export default class Cam extends React.Component {
     show: true,
     fullScreen: false,
     translation: [],
-    language: "Vietnamese"
+    language: "Vietnamese",
   }
 
   constructor(props: string) {
@@ -38,6 +38,8 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
+      this.camera.pausePreview();
+ 
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
       let resizedPhoto = await ImageManipulator.manipulateAsync(
         photo.uri, [{ resize: { width: photo.width * .75, height: photo.height * .75 } }], { compress: .5, base64: true }
@@ -57,7 +59,7 @@ export default class Cam extends React.Component {
         }),
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', 
         }
       };
       fetch("https://chenaaron.com/triolingo/users", fetchOptions)
@@ -129,6 +131,7 @@ export default class Cam extends React.Component {
                   onPress={() => {
                     console.log("OK Presed")
                     this.setState({ show: false })
+                    this.camera?.resumePreview();
                   }}
                 >
                   <Text>Ok</Text>
