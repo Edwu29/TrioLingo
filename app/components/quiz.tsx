@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Image, ImageBackground, Button } from 'react-native';
+import { StyleSheet, View, Image, ImageBackground, Button, Text } from 'react-native';
 import { Card } from 'react-native-elements';
 import { RadioButton } from 'react-native-paper';
 import example from '../components/quiz.json'; // Example data set
@@ -9,101 +9,96 @@ const base64 = 'data:image/png;base64,'
 
 export default class Quiz extends React.Component {
     state = {
-        data: example, // Temporary, change it to actual data sent when that's set up 
         value: '',
         activeBgColor: "black",
         score: 0,
-        selected: "",
         questionIndex: 0,
     }
 
     constructor(props: any) {
         super(props);
     }
-    nextQuestion(value: string) {
-        if(value == undefined)
-        {
+
+    nextQuestion() {
+        let value = this.state.value;
+        if (value == undefined) {
             return
         }
-        if(value == this.state.data[this.state.questionIndex].translation) 
-        {
+        console.log("SUBMITON2", value);
+        if (value == this.props.questions[this.state.questionIndex].translation) {
             this.setState({
                 activeBgColor: "green",
-                score:this.state.score+1,
-                questionIndex:this.state.questionIndex+1,
-                selected: undefined
+                score: this.state.score + 1,
+                questionIndex: this.state.questionIndex + 1,
             });
-                
-        }
-            else {
-           this.setState({
-                 activeBgColor: "red",
-                 questionIndex:this.state.questionIndex+1,
-                 selected: undefined
-           });
-        }
-    }
-        
 
-
-    help = (value: any) => {
-        this.setState({selected: value})
-        console.log(value)
+        }
+        else {
+            this.setState({
+                activeBgColor: "red",
+                questionIndex: this.state.questionIndex + 1,
+            });
+        }
     }
 
     render() {
         return (
             <View style={{ flex: 1 }}>
                 <Card containerStyle={{ flex: 1, justifyContent: 'center' }}>
-                    <Card.Title>What is "{this.state.data[this.state.questionIndex].label}" in {this.state.data[this.state.questionIndex].translationLanguage}?</Card.Title>
-                    <Card.Divider />
+                    {
+                        this.state.questionIndex < this.props.questions.length && <>
+                            <Card.Title>What is "{this.props.questions[this.state.questionIndex].label}" in {this.props.questions[this.state.questionIndex].translationLanguage}?</Card.Title>
+                            <Card.Divider />
+                            <Card.Image style={style.image} source={{ uri: base64.concat(this.props.questions[this.state.questionIndex].image) }}></Card.Image>
+                            <View>
+                                <RadioButton.Group onValueChange={value => this.setState({ value: value })} value={this.state.value}>
+                                    <RadioButton.Item
+                                        label={this.props.questions[this.state.questionIndex].wordChoices[0]}
+                                        value={this.props.questions[this.state.questionIndex].wordChoices[0]} style={style.choices}
+                                        labelStyle={style.labelChoices}
+                                        uncheckedColor="#000"
+                                        color={this.state.activeBgColor}
+                                    />
 
-                    <Card.Image  style={style.image} source={{ uri: base64.concat(this.state.data[this.state.questionIndex].image) }}></Card.Image>
+                                    <RadioButton.Item
+                                        label={this.props.questions[this.state.questionIndex].wordChoices[1]}
+                                        value={this.props.questions[this.state.questionIndex].wordChoices[1]} style={style.choices}
+                                        labelStyle={style.labelChoices}
+                                        uncheckedColor="#000"
+                                        color={this.state.activeBgColor}
+                                    />
 
-                    <View>
-                        <RadioButton.Group onValueChange={value => this.setState({ value: value })} value={this.state.value}>
-                            <RadioButton.Item
+                                    <RadioButton.Item
+                                        label={this.props.questions[this.state.questionIndex].wordChoices[2]}
+                                        value={this.props.questions[this.state.questionIndex].wordChoices[2]} style={style.choices}
+                                        labelStyle={style.labelChoices}
+                                        uncheckedColor="#000"
+                                        color={this.state.activeBgColor}
+                                    />
 
-                                label={this.state.data[this.state.questionIndex].wordChoices[0]}
+                                    <RadioButton.Item
+                                        label={this.props.questions[this.state.questionIndex].wordChoices[3]}
+                                        value={this.props.questions[this.state.questionIndex].wordChoices[3]} style={style.choices}
+                                        labelStyle={style.labelChoices}
+                                        uncheckedColor="#000"
+                                        color={this.state.activeBgColor}
+                                    />
 
-                                value="first" style={style.choices}
-                                labelStyle={style.labelChoices}
-                                uncheckedColor="#000"
-                                color={this.state.activeBgColor}
-                                onPress={() => this.help(this.state.data[this.state.questionIndex].wordChoices[0])}
-                            //onChange={(value) => {return this.changeStyle(value);}}
-                            />
-
-                            <RadioButton.Item
-                                label={this.state.data[this.state.questionIndex].wordChoices[1]}
-                                value="Second" style={style.choices}
-                                labelStyle={style.labelChoices}
-                                uncheckedColor="#000"
-                                color={this.state.activeBgColor}
-                                onPress={() => this.help(this.state.data[this.state.questionIndex].wordChoices[1])}
-                            />
-
-                            <RadioButton.Item
-                                label={this.state.data[this.state.questionIndex].wordChoices[2]}
-                                value="Third" style={style.choices}
-                                labelStyle={style.labelChoices}
-                                uncheckedColor="#000"
-                                color={this.state.activeBgColor}
-                                onPress={() => this.help(this.state.data[this.state.questionIndex].wordChoices[2])}
-                            />
-
-                            <RadioButton.Item
-                                label={this.state.data[this.state.questionIndex].wordChoices[3]}
-                                value="Fourth" style={style.choices}
-                                labelStyle={style.labelChoices}
-                                uncheckedColor="#000"
-                                color={this.state.activeBgColor}
-                                onPress={() => this.help(this.state.data[this.state.questionIndex].wordChoices[3])}
-                            />
-
-                        </RadioButton.Group>
-                        <Button title="next" onPress={()=>{this.nextQuestion(this.state.selected)}}/>
-                    </View>
+                                </RadioButton.Group>
+                                <Button title="next" onPress={() => { this.nextQuestion() }} />
+                            </View>
+                        </>
+                    }
+                    {
+                        this.state.questionIndex >= this.props.questions.length && <>
+                            <View>
+                                <Text style={{fontSize: 50, textAlign: "center", marginBottom: 25}}>
+                                    You scored {this.state.score} out of {this.props.questions.length}!
+                                </Text>
+                                <Button title="Done" onPress={() => { this.props.exitQuiz() }} />
+                            </View>
+                        </>
+                    }
                 </Card>
             </View>
         );

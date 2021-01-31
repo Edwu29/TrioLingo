@@ -65,7 +65,7 @@ router.put("/append_oneObject", async function (req, res, next) {
 router.get("/get_total", async (req, res) => {
     let key = req.query.key;
     let objects = await getObjects(key);
-    res.json({ count: Object.keys(objects) });
+    res.json({ count: Object.keys(objects).length });
 })
 
 function shuffle(array) {

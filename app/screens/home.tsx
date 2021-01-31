@@ -1,82 +1,107 @@
 import * as React from 'react';
 import { StyleSheet, SafeAreaView } from 'react-native';
-import { useState } from 'react';
 import { Text, View } from '../components/Themed';
 import { Card, Overlay, Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { withNavigationFocus } from 'react-navigation';
 import AsyncStorage from "@react-native-community/async-storage";
+import Quiz from "../components/quiz";
+
 export default class TabOneScreen extends React.Component {
-  constructor(props: any)
-  {
+  constructor(props: any) {
     super(props);
   }
   state = {
-    quiz: []
+    quiz: [],
+    visible: false,
+    count: 0
   }
 
-  async fetchData()
-  {
+  componentDidMount() {
+    AsyncStorage.getItem("key").then(key => {
+      fetch(`https://chenaaron.com/triolingo/firebase/get_total?key=${key}`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ count: data["count"] })
+      })
+      .catch(error => console.log(error))
+    })
+  }
+
+  async fetchData() {
     let key = await AsyncStorage.getItem("key");
     fetch(`https://chenaaron.com/triolingo/firebase/get_quiz?key=${key}`)
-        .then(response => response.json())
-        .then(data => {
-          this.setState({quiz:data})
-          console.log("quiz!!! " + JSON.stringify(this.state.quiz));
-        })
-        .catch(error => console.log(error))
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ quiz: data })
+      })
+      .catch(error => console.log(error))
   }
-  
-  componentDidMount()
-  {
-    this.fetchData(); 
-  }
-  //can use quiz here i think?
 
-  render(){
-  return (
-    <SafeAreaView style={styles.container}>
-      <Card containerStyle={styles.cardStyle}>
+  toggleOverlay = () => {
+    this.setState({ visible: !this.state.visible }, () => {
+      if (this.state.visible) {
+        this.fetchData();
+      }
+    });
+  };
+
+  exitQuiz = () => {
+    console.log("EXIT QUIZ");
+    this.setState({ quiz: [], visible: false });
+  }
+
+  render() {
+    let quiz = undefined;
+    if (this.state.quiz.length > 0) {
+      quiz = <Quiz questions={this.state.quiz} exitQuiz={this.exitQuiz}></Quiz>;
+    }
+
+    return (
+      <SafeAreaView style={styles.container}>
         <View style={{ backgroundColor: "pink", justifyContent: "center", alignItems: "center" }}>
           <Text style={styles.title}>
-            31
-        </Text>
+            {this.state.count}
+          </Text>
           <Text style={styles.subtitle}>
             Words Discovered
-        </Text>
+            </Text>
         </View>
 
-        <Card.Title style={styles.cardTitle}>
-          <Ionicons name="calendar" size={30} color="#0D7DBC" />
+        <Card containerStyle={styles.cardStyle}>
+          <Card.Title style={styles.cardTitle}>
+            <Ionicons name="calendar" size={30} color="#0D7DBC" />
           Current Quiz
           </Card.Title>
-        <Card.Divider />
-        <SafeAreaView style={{ backgroundColor: "white" }}>
-          <Text style={styles.cardText}>Hello there! There are no quizzes determined yet, please choose a language in settings :).</Text>
-          <Button title="Take Quiz" onPress={toggleOverlay} />
+          <Card.Divider />
+          <SafeAreaView style={{ backgroundColor: "white" }}>
+            <Text style={styles.cardText}>Hello there! There are no quizzes determined yet, please choose a language in settings :).</Text>
+            <Button title="Take Quiz" onPress={this.toggleOverlay} />
 
-          <SafeAreaView>
-            <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ alignSelf: 'center', width: '100%', height: '100%', flex: 1 }}>
-              <Quiz></Quiz>
-            </Overlay>
+            <SafeAreaView>
+              <Overlay isVisible={this.state.visible} onBackdropPress={this.toggleOverlay} overlayStyle={{ alignSelf: 'center', width: '100%', height: '100%', flex: 1 }}>
+                <>
+                  {quiz}
+                </>
+              </Overlay>
+            </SafeAreaView>
+
           </SafeAreaView>
+        </Card>
 
-        </SafeAreaView>
-      </Card>
+        <Card containerStyle={styles.cardStyle}>
+          <Card.Title style={styles.cardTitle}> <Ionicons name="time" size={30} color="#0D7DBC" />History</Card.Title>
+          <Card.Divider />
+          <View style={{ backgroundColor: "white" }}>
+            <Text style={styles.cardText}>Number of Quizzes Taken: 0</Text>
+            <Text style={styles.cardText}>Accuracy: 0%</Text>
+          </View>
+        </Card>
+      </SafeAreaView>
 
-      <Card containerStyle={styles.cardStyle}>
-        <Card.Title style={styles.cardTitle}> <Ionicons name="time" size={30} color="#0D7DBC" />History</Card.Title>
-        <Card.Divider />
-        <View style={{ backgroundColor: "white" }}>
-          <Text style={styles.cardText}>Number of Quizzes Taken: 0</Text>
-          <Text style={styles.cardText}>Accuracy: 0%</Text>
-        </View>
-      </Card>
-    </SafeAreaView>
-
-  );
-}
+    );
+  }
 }
 
 const styles = StyleSheet.create({
