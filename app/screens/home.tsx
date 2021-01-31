@@ -4,8 +4,37 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { Card } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
+import {useEffect, useState} from 'react';
+import { withNavigationFocus } from 'react-navigation';
+import AsyncStorage from "@react-native-community/async-storage";
+export default class TabOneScreen extends React.Component {
+  constructor(props: any)
+  {
+    super(props);
+  }
+  state = {
+    quiz: []
+  }
 
-export default function TabOneScreen() {
+  async fetchData()
+  {
+    let key = await AsyncStorage.getItem("key");
+    fetch(`https://chenaaron.com/triolingo/firebase/get_quiz?key=${key}`)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({quiz:data})
+          console.log("quiz!!! " + JSON.stringify(this.state.quiz));
+        })
+        .catch(error => console.log(error))
+  }
+  
+  componentDidMount()
+  {
+    this.fetchData(); 
+  }
+  //can use quiz here i think?
+
+  render(){
   return (
     <View style={styles.container}>
       <Card containerStyle={styles.cardStyle}>
@@ -27,6 +56,7 @@ export default function TabOneScreen() {
     </View>
 
   );
+}
 }
 
 const styles = StyleSheet.create({
