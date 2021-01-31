@@ -13,8 +13,10 @@ export default class Cam extends React.Component {
   state = {
     status: "",
     type: Camera.Constants.Type.front,
-    show: false,
+    show: true,
     fullScreen: false,
+    translation: [],
+    language: "Vietnamese"
   }
 
   constructor(props: string) {
@@ -36,7 +38,6 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      this.setState({ show: true });
       let photo = await this.camera.takePictureAsync({ base64: true, quality: 0 });
       let resizedPhoto = await ImageManipulator.manipulateAsync(
         photo.uri, [{ resize: { width: photo.width * .75, height: photo.height * .75 } }], { compress: .5, base64: true }
@@ -44,7 +45,7 @@ export default class Cam extends React.Component {
       console.log(resizedPhoto.uri);
       console.log(resizedPhoto.width, photo.width);
       console.log(resizedPhoto.height, photo.height);
-      
+
       let key = await AsyncStorage.getItem("key");
 
       let fetchOptions = {
@@ -52,7 +53,7 @@ export default class Cam extends React.Component {
         body: JSON.stringify({
           key: key,
           image: resizedPhoto.base64,
-          language: "Vietnamese"
+          language: this.state.language
         }),
         headers: {
           Accept: 'application/json',
@@ -61,7 +62,10 @@ export default class Cam extends React.Component {
       };
       fetch("https://chenaaron.com/triolingo/users", fetchOptions)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data);
+          this.setState({ show: true, translation: data });
+        })
         .catch(error => console.log(error))
     }
   };
@@ -95,33 +99,42 @@ export default class Cam extends React.Component {
             coverScreen={false}
           >
             <View style={{ backgroundColor: "#FFFEF2" }}>
-                  <View
-                    style={{
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                      overflow: 'hidden',
-                      alignItems: 'center'
-                    }} >
-                    <Text style={{ fontSize: 24 }}> Do you want to save this photo?</Text>
-                  </View>
+              <View
+                style={{
+                  borderTopLeftRadius: 10,
+                  borderTopRightRadius: 10,
+                  overflow: 'hidden',
+                  alignItems: 'center',
+                  padding: "3%"
+                }} >
+                {
+                  this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
+                    We found a {this.state.translation[0]["original"]}.
+                    It translates to {this.state.translation[0]["translated"]} in {this.state.language}.
+                  </Text>
+                }
+                {
+                  this.state.translation.length == 0 && <Text style={{ fontSize: 24 }}>
+                    We did not find anything! Try again.
+                  </Text>
+                }
+              </View>
 
-                  <View style={{ flexDirection: "row" }}>
-                    <View style={styles.yesButton}>
-                      <Button
-                        title="Yes"
-                        onPress={() => { this.setState({ show: false }) }}
-                        color="#000"
-                      />
-                    </View>
-                    <View style={styles.noButton}>
-                      <Button
-                        title="No"
-                        onPress={() => { this.setState({ show: false }) }}
-                        color="#000"
-                      />
-                    </View>
-                  </View>
-                </View>
+              <View style={{
+                flexDirection: "row",
+                justifyContent: "center", alignItems: "center"
+              }}>
+                <TouchableOpacity
+                  style={styles.okButton}
+                  onPress={() => {
+                    console.log("OK Presed")
+                    this.setState({ show: false })
+                  }}
+                >
+                  <Text>Ok</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </Modal>
         </Camera>
       </View >
@@ -132,43 +145,50 @@ export default class Cam extends React.Component {
 
 /* @hide const styles = StyleSheet.create({... }); */
 const styles = StyleSheet.create({
-            container: {
-            flex: 1,
+  container: {
+    flex: 1,
   },
   camera: {
-            flex: 1,
+    flex: 1,
     height: "50%"
   },
   buttonContainer: {
-            flex: 1,
+    flex: 1,
     backgroundColor: 'transparent',
     flexDirection: 'row',
     margin: 20,
     width: '100%'
   },
   resize: {
-            flex: 0.1,
+    flex: 0.1,
     alignSelf: 'flex-end',
     alignItems: 'center',
   },
   capture: {
-            flex: 1,
+    flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
     marginRight: 63
   },
   text: {
-            fontSize: 18,
+    fontSize: 18,
     color: 'white',
   },
+  okButton: {
+    marginVertical: '2%',
+    paddingVertical: '3%',
+    paddingHorizontal: '10%',
+    backgroundColor: "#DDDDDD",
+    padding: 10
+  },
   yesButton: {
-            marginVertical: '5%',
+    marginVertical: '5%',
     marginLeft: '25%',
     justifyContent: 'flex-start',
     alignItems: 'center'
   },
   noButton: {
-            marginVertical: '5%',
+    marginVertical: '5%',
     marginLeft: '25%',
     justifyContent: 'flex-end',
     alignItems: 'center'
