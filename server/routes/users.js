@@ -76,8 +76,6 @@ router.post('/', async function(req, res, next) {
   let image = req.body.image;
   let words = await imageToText(image);
   let translatedWords = await translateText(words, "zh-TW");
-  res.json(translatedWords);
-
 });
 
 module.exports = router;
