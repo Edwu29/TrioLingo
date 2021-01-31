@@ -32,21 +32,22 @@ export default class Settings extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View>
-          <Text style={styles.text}>Language: </Text>
-          <Picker
-            selectedValue={this.state.language}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({ language: itemValue })
-            }
-            style={styles.picker}
-          >
-            {
-              Object.keys(languages).map(language => {
-                return <Picker.Item label={language} value={language} />
-              })
-            }
-          </Picker>
+        <View style={{ backgroundColor: 'pink' }}>
+          <Text style={styles.text}>Language:
+            <Picker
+              selectedValue={this.state.language}
+              onValueChange={(itemValue) =>
+                this.setState({ language: itemValue })
+              }
+              style={styles.picker}
+            >
+              {
+                Object.keys(languages).map(language => {
+                  return <Picker.Item key={language} label={language} value={language} />
+                })
+              }
+            </Picker>
+          </Text>
         </View>
       </View>
     );
@@ -58,19 +59,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'pink',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   picker: {
-    width: '50%',
+    fontSize: 25,
+    height: 150,
+    width: 150,
     alignSelf: 'flex-end',
+    marginLeft: 5,
   },
   text: {
-    flex:1,
+    fontSize: 25,
+    flex: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
-    backgroundColor: 'orange',
-    width: 100,
+    marginLeft: 5,
   }
 });
