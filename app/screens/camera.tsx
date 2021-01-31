@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Camera } from 'expo-camera';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ export default class Cam extends React.Component {
   state = {
     status: "",
     type: Camera.Constants.Type.front,
-    show: true,
+    show: false,
     fullScreen: false,
     translation: [],
     language: "Vietnamese"
@@ -80,62 +80,64 @@ export default class Cam extends React.Component {
     return (
       <View style={styles.container}>
         <Camera style={styles.camera} type={this.state.type} ref={ref => { this.camera = ref; }} >
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.resize}
-              onPress={this.toggleCameraType}>
-              <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
-            </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1 }}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.resize}
+                onPress={this.toggleCameraType}>
+                <MaterialCommunityIcons name="camera-switch" size={30} color="pink" />
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.capture}
-              onPress={this.snap}>
-              <Fontisto name="camera" size={54} color="pink" />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={styles.capture}
+                onPress={this.snap}>
+                <Fontisto name="camera" size={54} color="pink" />
+              </TouchableOpacity>
+            </View>
 
-          <Modal
-            isVisible={this.state.show}
-            coverScreen={false}
-          >
-            <View style={{ backgroundColor: "#FFFEF2" }}>
-              <View
-                style={{
-                  borderTopLeftRadius: 10,
-                  borderTopRightRadius: 10,
-                  overflow: 'hidden',
-                  alignItems: 'center',
-                  padding: "3%"
-                }} >
-                {
-                  this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
-                    We found a {this.state.translation[0]["original"]}.
+            <Modal
+              isVisible={this.state.show}
+              coverScreen={false}
+            >
+              <View style={{ backgroundColor: "#FFFEF2" }}>
+                <View
+                  style={{
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    overflow: 'hidden',
+                    alignItems: 'center',
+                    padding: "3%"
+                  }} >
+                  {
+                    this.state.translation.length > 0 && <Text style={{ fontSize: 24 }}>
+                      We found a {this.state.translation[0]["original"]}.
                     It translates to {this.state.translation[0]["translated"]} in {this.state.language}.
                   </Text>
-                }
-                {
-                  this.state.translation.length == 0 && <Text style={{ fontSize: 24 }}>
-                    We did not find anything! Try again.
+                  }
+                  {
+                    this.state.translation.length == 0 && <Text style={{ fontSize: 24 }}>
+                      We did not find anything! Try again.
                   </Text>
-                }
-              </View>
+                  }
+                </View>
 
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "center", alignItems: "center"
-              }}>
-                <TouchableOpacity
-                  style={styles.okButton}
-                  onPress={() => {
-                    console.log("OK Presed")
-                    this.setState({ show: false })
-                  }}
-                >
-                  <Text>Ok</Text>
-                </TouchableOpacity>
+                <View style={{
+                  flexDirection: "row",
+                  justifyContent: "center", alignItems: "center"
+                }}>
+                  <TouchableOpacity
+                    style={styles.okButton}
+                    onPress={() => {
+                      console.log("OK Presed")
+                      this.setState({ show: false })
+                    }}
+                  >
+                    <Text>Ok</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Modal>
+            </Modal>
+          </TouchableOpacity>
         </Camera>
       </View >
     )

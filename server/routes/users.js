@@ -97,7 +97,7 @@ router.post('/', async function (req, res, next) {
       label: bestResults["original"],
       translation: bestResults["translated"],
       translationLanguage: language,
-      similarWords: []
+      similarWords: ["熱狗a", "熱狗b", "熱狗c", "熱狗d"]
     };
 
     appendObject(key, object);
