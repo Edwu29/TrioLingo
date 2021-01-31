@@ -2,31 +2,30 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import { MaterialCommunityIcons, Entypo  } from '@expo/vector-icons';
-import { Card, Button } from 'react-native-elements';
+import { Card } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-
-
       <Card containerStyle={styles.cardStyle}>
-        <View>
-          <Card.Title style={styles.cardTitle}><MaterialCommunityIcons name='calendar' color='#0D7DBC' size={30} />Current Quiz</Card.Title>
-          <Card.Divider style={styles.cardDivider}>
-            <Text>Hello there! There are no quizzes determined yet, please choose a language :).</Text>
-          </Card.Divider>
+        <Card.Title style={styles.cardTitle}><Ionicons name="calendar" size={30} color="#0D7DBC" />Current Quiz</Card.Title>
+        <Card.Divider />
+        <View style={{ backgroundColor: "white" }}>
+          <Text style={styles.cardText}>Hello there! There are no quizzes determined yet, please choose a language in settings :).</Text>
         </View>
       </Card>
 
       <Card containerStyle={styles.cardStyle}>
-        <Card.Title style={styles.cardTitle}><Entypo name="back-in-time" size={24} color="#0D7DBC" /> History</Card.Title>
-        <Card.Divider style={styles.cardDivider}>
-          <Text>Number of Quizzes Taken: 0</Text>
-          <Text>Accuracy: 0%</Text>
-        </Card.Divider>
+        <Card.Title style={styles.cardTitle}> <Ionicons name="time" size={30} color="#0D7DBC" />History</Card.Title>
+        <Card.Divider />
+        <View style={{ backgroundColor: "white" }}>
+          <Text style={styles.cardText}>Number of Quizzes Taken: 0</Text>
+          <Text style={styles.cardText}>Accuracy: 0%</Text>
+        </View>
       </Card>
     </View>
+
   );
 }
 
@@ -46,11 +45,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardText: {
-    fontSize: 12,
+    color: "black",
   },
   cardTitle: {
     justifyContent: 'flex-start',
     alignSelf: 'flex-start',
-    flex: 1,
   },
+  linearGradient: {
+    flex: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 5
+  }
 });
