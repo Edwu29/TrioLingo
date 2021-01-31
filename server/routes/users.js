@@ -7,7 +7,25 @@ const { Translate } = require("@google-cloud/translate").v2;
 // Imports the Google Cloud client libraries
 const vision = require("@google-cloud/vision");
 
-const languageLookup = {};
+const languageLookup = {
+  Arabic: "ar",
+  Chinese_S: "zh",
+  Chinese_T: "zh-TW",
+  French: "fr",
+  German: "de",
+  Hindi: "hi",
+  Indonesian: "id",
+  Italian: "it",
+  Japanese: "ja",
+  Korean: "ko",
+  Myanmar: "my",
+  Russian: "ru",
+  Spanish: "es",
+  Tagalog: "tl",
+  Thai: "th",
+  Turkish: "tr",
+  Vietnamese: "vi",
+};
 
 async function imageToText(image) {
   // Creates a client
